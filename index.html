@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СоциоКруг - Регистрация и Вход</title>
+    <link rel="icon" href="СоциоКруг.png" type="image/png">
+    <style>
+        /* Стили остаются неизменными */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+        }
+
+        section {
+            margin: 20px;
+            padding: 60px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: left;
+        }
+
+        h1 {
+            color: #0065b8;
+        }
+
+        h4 {
+            margin-top: 10px;
+            color: #0065b8;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #007bb5;
+        }
+
+        .hint {
+            display: none;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <section id="registrationSection">
+        <h1>Регистрация</h1>
+        <h4>Логин <button onclick="showHint('Логин - это ваш логин')">?</button></h4>
+        <input type="text" id="loginInput" placeholder="Логин">
+        <h4>Имя пользователя</h4>
+        <input type="text" id="usernameInput" placeholder="Имя пользователя">
+        <h4>Пароль</h4>
+        <input type="password" id="passwordInput" placeholder="Пароль">
+        <br><br>
+        <button onclick="register()">Зарегистрироваться</button>
+    </section>
+    <section id="loginSection">
+        <h1>Вход</h1>
+        <h4>Логин </h4>
+        <input type="text" id="loginUsernameInput" placeholder="Логин">
+        <h4>Пароль</h4>
+        <input type="password" id="loginPasswordInput" placeholder="Пароль">
+        <br><br>
+        <button onclick="login()">Войти</button>
+    </section>
+
+    <div class="hint" id="hint"></div>
+
+    <script>
+        function showHint(message) {
+            var hintElement = document.getElementById('hint');
+            hintElement.innerHTML = message;
+            hintElement.style.display = 'block';
+            setTimeout(function() {
+                hintElement.style.display = 'none';
+            }, 3000);
+        }
+
+        function register() {
+  var login = document.getElementById('loginInput').value;
+  var username = document.getElementById('usernameInput').value;
+  var password = document.getElementById('passwordInput').value;
+
+  if (login && username && password) {
+    // Отправляем данные на сервер
+    fetch('http://localhost:3000/save-username', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.message);
+        localStorage.setItem('login', login);
+        localStorage.setItem('username', username);
+        localStorage.setItem('password', password);
+
+        // Перенаправляем на me.html
+        window.location.href = 'me.html';
+      })
+      .catch(error => console.error('Error:', error));
+  } else {
+    alert('Пожалуйста, заполните все поля.');
+  }
+}
+
+
+        function login() {
+            var loginUsername = document.getElementById('loginUsernameInput').value;
+            var loginPassword = document.getElementById('loginPasswordInput').value;
+
+            // Получаем сохраненные данные из localStorage
+            var storedLogin = localStorage.getItem('login');
+            var storedPassword = localStorage.getItem('password');
+
+            if (loginUsername === storedLogin && loginPassword === storedPassword) {
+                // Перенаправляем на sms.html при успешном входе
+                window.location.href = 'me.html';
+            } else {
+                alert('Неверное имя пользователя или пароль.');
+            }
+        }
+        
+  document.addEventListener('DOMContentLoaded', function() {
+    register();
+  });
+</script>
+
+    </script>
+</body>
+</html>

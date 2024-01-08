@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список пользователей</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #0065b8;
+        }
+
+        #userList {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        #userList li {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Список пользователей</h1>
+    <ul id="userList"></ul>
+
+    <script>
+        function getUsers() {
+            fetch('/get-users')
+                .then(response => response.json())
+                .then(data => {
+                    const userList = document.getElementById('userList');
+                    userList.innerHTML = ''; // Очищаем текущий список
+
+                    if (data.totalCount > 0) {
+                        data.userNames.forEach(username => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = username;
+                            userList.appendChild(listItem);
+                        });
+                    } else {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = 'Нет зарегистрированных пользователей.';
+                        userList.appendChild(listItem);
+                    }
+                })
+                .catch(error => console.error('Ошибка при получении списка пользователей:', error));
+        }
+
+        // Обновляем список при загрузке страницы
+        getUsers();
+
+        // Обновляем список каждые 5 секунд (5000 миллисекунд)
+        setInterval(getUsers, 5000);
+    </script>
+</body>
+</html>
